@@ -7,15 +7,29 @@ const toDoForm = document.querySelector(".js-toDoForm"),
 
 const TODOS_LS = 'toDos';
 
+const toDos = []; //할 일을 추가할 때마다 이 배열에 추가되도록
+
+function saveToDos() {
+    localStorage.setItem(TODOS_LS, JSON.stringify(toDos));
+}
+
 function paintToDo(text){
     const li = document.createElement("li"); //지금까지는 쿼리 셀렉터만 사용했는데, 이번엔 html에서 필요한것을 얻어오는게 아니라 js에서 html에 생성한다(생기는 위치는???)
     const delBtn = document.createElement("button");
-    delBtn.innerText = "❌"; //Elemnt.value , innerText 차이 -> 문서 보는게 정확, 강의에선 value -> innerText로 바꿨음
     const span = document.createElement("span");
+    const newId = toDos.length + 1;
+    delBtn.innerText = "❌"; //Elemnt.value , innerText 차이 -> 문서 보는게 정확, 강의에선 value -> innerText로 바꿨음
     span.innerText = text; //subit 함수에서 입력받은 인자를 넣어줌
-    li.appendChild(span) //뭔가를 부모 element 안에 넣는것, span 을 li안에 넣어줌
+    li.appendChild(span) //뭔가를 부모 element 안에 넣는것, span 을 li안에 넣어줌, appendChild 호출 순서에 따라 위치도 달라짐
     li.appendChild(delBtn);// li 안에는 내용(span)과 버튼(delBtn)이 있고,
+    li.id = newId;
     toDoList.appendChild(li); // li는 toDoList클래스를 가진 ul 안에 생김
+    const toDoObj = {
+        text: text,
+        id: newId
+    };
+    toDos.push(toDoObj); //배열안에 ojb를 넣고
+    saveToDos();  // localStorage에 저장한다
 }
 
 function handleSubmit(event){
@@ -25,9 +39,16 @@ function handleSubmit(event){
     toDoInput.value =""; //
 }
 
-function loadToDos() {
-    const toDos = localStorage.getItem(TODOS_LS);
-    if (toDos === null){
+
+
+function loadToDos() { 
+    const loadedToDos = localStorage.getItem(TODOS_LS);
+    if (loadedToDos !== null){ //null이 아니라면 불러올 수 있는데 그게 text임  
+        // console.log(loadedToDos);                                                          // loaded는 로컬스토리지에 저장된 값들을 가져오는것, 이때는 string이다가
+        const parsedToDos = JSON.parse(loadedToDos);                                         //parse해주면 object로 변환됨
+        parsedToDos.forEach((toDo)=> {
+            paintToDo(toDo.text);
+        });//forEach는 array에 담겨있는 것들 각각에 한번씩 함수를 실행시킴
 
     }
 }
