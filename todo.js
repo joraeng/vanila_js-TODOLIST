@@ -7,7 +7,21 @@ const toDoForm = document.querySelector(".js-toDoForm"),
 
 const TODOS_LS = 'toDos';
 
-const toDos = []; //할 일을 추가할 때마다 이 배열에 추가되도록
+
+let toDos = []; //할 일을 추가할 때마다 이 배열에 추가되도록, local storage에서 toDos라는 항목 안에 모든 toDo들이 저장되어야함
+
+function deleteToDo(event) {
+    const btn = event.target;
+    const li = btn.parentNode;
+    toDoList.removeChild(li); //html을 여기서 지웠음
+
+    const cleanToDos = toDos.filter((toDo)=> { //제일 헷갈리는건 여기서 toDo 매개변수에 인수로는 뭐가 들어가느냐 인데... 아마 배열 안의 item들이겠지?
+        return toDo.id !== parseInt(li.id); // li는 지우려는 아이템, 그런데 string으로 비교하게 되니까 숫자로 바꿔줘야함
+    }); //이제 로컬 스토리지 내용도 fitering된 array로 바꿔줘야함
+    toDos = cleanToDos //이 작업을 위해 배열은 let으로
+    saveToDos(); //이걸 해주지 않으면 배열내용이 바뀌었어도 로컬 스토리지에는 반영안됨
+}
+
 
 function saveToDos() {
     localStorage.setItem(TODOS_LS, JSON.stringify(toDos));
@@ -19,6 +33,7 @@ function paintToDo(text){
     const span = document.createElement("span");
     const newId = toDos.length + 1;
     delBtn.innerText = "❌"; //Elemnt.value , innerText 차이 -> 문서 보는게 정확, 강의에선 value -> innerText로 바꿨음
+    delBtn.addEventListener("click", deleteToDo);
     span.innerText = text; //subit 함수에서 입력받은 인자를 넣어줌
     li.appendChild(span) //뭔가를 부모 element 안에 넣는것, span 을 li안에 넣어줌, appendChild 호출 순서에 따라 위치도 달라짐
     li.appendChild(delBtn);// li 안에는 내용(span)과 버튼(delBtn)이 있고,
@@ -44,9 +59,8 @@ function handleSubmit(event){
 function loadToDos() { 
     const loadedToDos = localStorage.getItem(TODOS_LS);
     if (loadedToDos !== null){ //null이 아니라면 불러올 수 있는데 그게 text임  
-        // console.log(loadedToDos);                                                          // loaded는 로컬스토리지에 저장된 값들을 가져오는것, 이때는 string이다가
-        const parsedToDos = JSON.parse(loadedToDos);                                         //parse해주면 object로 변환됨
-        parsedToDos.forEach((toDo)=> {
+        const parsedToDos = JSON.parse(loadedToDos); 
+        parsedToDos.forEach((toDo)=> { //parse된 모든 obj들에 paint함수를 적용
             paintToDo(toDo.text);
         });//forEach는 array에 담겨있는 것들 각각에 한번씩 함수를 실행시킴
 
