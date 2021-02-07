@@ -35,8 +35,8 @@ function paintToDo(text){
     delBtn.innerText = "❌"; //Elemnt.value , innerText 차이 -> 문서 보는게 정확, 강의에선 value -> innerText로 바꿨음
     delBtn.addEventListener("click", deleteToDo);
     span.innerText = text; //subit 함수에서 입력받은 인자를 넣어줌
-    li.appendChild(span) //뭔가를 부모 element 안에 넣는것, span 을 li안에 넣어줌, appendChild 호출 순서에 따라 위치도 달라짐
     li.appendChild(delBtn);// li 안에는 내용(span)과 버튼(delBtn)이 있고,
+    li.appendChild(span) //뭔가를 부모 element 안에 넣는것, span 을 li안에 넣어줌, appendChild 호출 순서에 따라 위치도 달라짐
     li.id = newId;
     toDoList.appendChild(li); // li는 toDoList클래스를 가진 ul 안에 생김
     const toDoObj = {
