@@ -9,11 +9,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 937px;
+  height: 100vh;
 }
 
 .js-clock {
-  font-size: 95px;
+  font-size: 70px;
 }
 .js-greetings {
   font-size: 40px;
